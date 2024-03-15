@@ -3,8 +3,9 @@
 ---
 
 ## Introduction
-- 本repo是作者入学时在unitree_guide框架基础上编写的四足机器人深度强化学习Sim2Sim/Sim2Real框架。
-- 由于实验室开源协议和论文还未投稿，因此只开源作者探索之初成功部署的状态机，欢迎读者refer/debug。
+- 本repo是作者在unitree_guide框架基础上编写的四足机器人深度强化学习Sim2Sim/Sim2Real框架。
+- 由于实验室开源协议和论文还未投稿，因此只开源作者探索之初成功部署的状态机。
+- 本repo是作者刚入学时完成的，所以代码和逻辑上肯定会有不合理的地方，欢迎读者refer/debug（最主要是help作者找bug，QAQ）。
 - 如有侵权，请联系作者删除。
 
 **Maintainer**: KK-Zhou 
