@@ -14,10 +14,10 @@ State_rl::State_rl(CtrlComponents *ctrlComp) : FSMState(ctrlComp, FSMStateName::
 
     std::string modulePath = "/reinforcement/model/model.jit";
     modulePath = std::string(get_current_dir_name()) + "/src/unitree_guide/unitree_guide/src" + modulePath;
-    _priObsbuf.setZero();
+    _obs .setZero();
     
-    std::vector<float> floatVector(_priObsbuf.data(), _priObsbuf.data() + _priObsbuf.size());
-    torch::Tensor temp = torch::from_blob(floatVector.data(), {_priObsbuf.size()}, torch::kFloat32);
+    std::vector<float> floatVector(_obs .data(), _obs .data() + _obs .size());
+    torch::Tensor temp = torch::from_blob(floatVector.data(), {_obs .size()}, torch::kFloat32);
     inputs.push_back(temp);
 
     try
@@ -46,7 +46,7 @@ void State_rl::enter()
                      0., 0.9, -1.8, 
                      0., 0.9, -1.8; // legged_gym: FL FR RL RR  
 
-    _priObsbuf.setZero();
+    _obs .setZero();
     _targetDofPos.setZero();
     _targetDofVel.setZero();
     _highCmd.setZero();
@@ -82,8 +82,8 @@ void State_rl::run()
   
 void State_rl::act()
 {
-    std::vector<float> floatVector(_priObsbuf.data(), _priObsbuf.data() + _priObsbuf.size());
-    torch::Tensor temp = torch::from_blob(floatVector.data(), {_priObsbuf.size()}, torch::kFloat32);
+    std::vector<float> floatVector(_obs .data(), _obs .data() + _obs .size());
+    torch::Tensor temp = torch::from_blob(floatVector.data(), {_obs .size()}, torch::kFloat32);
     inputs.clear();
     inputs.push_back(temp);
     output = module.forward(inputs).toTensor();
@@ -142,12 +142,12 @@ void State_rl::limitTorques()
 void State_rl::computeObservations()
 {
     _highCmd << _command(0) * linVelScale, _command(1) * linVelScale, _command(2) * angleVelScale;
-    _priObsbuf<<_projGravity,                                           // 3     
-                _highCmd,                                               // 3                                        
-                (_dofPos - _dofDefaultPos) * dofPosScale,               // 12                
-                _dofVel * dofVelScale,                                  // 12
-                _preactions;                                            // 12
-                                                                        // 42
+    _obs << _projGravity,                                           // 3     
+            _highCmd,                                               // 3                                        
+            (_dofPos - _dofDefaultPos) * dofPosScale,               // 12                
+            _dofVel * dofVelScale,                                  // 12
+            _preactions;                                            // 12
+                                                                    // 42
 }
 
 void State_rl::getUserCmd()
